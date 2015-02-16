@@ -1,0 +1,40 @@
+/*
+	=-- Styling Carousel
+*/
+#carousel
+{
+    width: 800px;
+    height: 600px;
+    overflow: hidden;
+}
+#inner
+{
+	position : relative;
+	margin-bottom : 3rem;
+}
+#pager-wrapper {
+	height: 120px;
+	width: 100%;
+	overflow: hidden;
+	position: absolute;
+	bottom: -35px;
+	left: 0;
+	z-index: 2;
+}
+#pager img {
+	cursor: pointer;
+	background: #fff;
+	box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+	display: block;
+	width: 80px;
+	height: 80px;
+	padding: 10px;
+	margin: 10px;
+	float: left;
+}
+#pager img:hover {
+	background: #eff;
+}
+#pager img.selected {
+	background: #ccc;
+}
