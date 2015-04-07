@@ -45,8 +45,6 @@ add_action( 'wp_enqueue_scripts', 'webvisible_slider_load_js' );
 
 function webvisible_slider_load_js() 
 {
- 
-//	wp_register_script( 'jquery1-7-1-min', plugins_url('/js/libs/jquery-1.7.1.min.js', __FILE__) ); 
 	wp_register_script( 'jquery1-8-2-min', 'http://code.jquery.com/jquery-1.8.2.min.js');
 	wp_register_script( 'slides-min-jquery', plugins_url('/js/jquery.carouFredSel-6.1.0-packed.js', __FILE__), array('jquery1-8-2-min') );
 	wp_register_script( 'home-carousel-conf', plugins_url('/js/slides_conf.js', __FILE__), array('slides-min-jquery') );
@@ -57,12 +55,9 @@ add_action('wp_enqueue_scripts','webvisible_slider_load_css');
 function webvisible_slider_load_css()
 {
 	wp_register_style('webvisible_slider_style', plugins_url('css/style-slider-caroufredsel.css',  __FILE__) );
-	wp_enqueue_style('webvisible_slider_style');
 }
 
-// Creer un carousel via shortcode 
-add_shortcode( 'home_slider', 'webvisible_slider_home_slider' );
-function webvisible_slider_home_slider() 
+function get_webvisible_slider() 
 {
 	$args_slides = array (
 		'post_type'              => 'home_slides',
@@ -74,8 +69,8 @@ function webvisible_slider_home_slider()
 	);
 	$query_slides = new wp_query($args_slides);
 	
-	if ($query_slides->have_posts()) :
-    
+	if ($query_slides->have_posts())
+    {
     
         while ($query_slides->have_posts()) : $query_slides->the_post(); 
             $large[] .= get_the_post_thumbnail($post->ID ,'full');
@@ -84,22 +79,25 @@ function webvisible_slider_home_slider()
     
 		$output = '
 		<div id="inner">
-			
-				<div id="carousel">'."\r\n".implode("\r\n", $large ).'
-				</div> <!-- #carousel -->
-			
+            <div id="carousel">'."\r\n".implode("\r\n", $large ).'
+            </div> <!-- #carousel -->
 
 			<div id="pager-wrapper">
 				<div id="pager">'."\r\n".implode("\r\n", $thumb ).'
 				</div> <!-- #pager -->	
 			</div> <!-- #pager-wrapper -->
 		</div> <!-- #inner --> ';
-	endif;
-	
+        
+        wp_enqueue_script('home-carousel-conf');
+        wp_enqueue_style('webvisible_slider_style');
+    }
 	
 	wp_reset_postdata();
-	wp_enqueue_script('home-carousel-conf');
-	
 	return $output;
 }
 
+// Creer un carousel via shortcode 
+add_shortcode( 'home_slider', 'get_webvisible_slider' );
+
+// authoriser le shortcode dans un widget 
+add_filter('widget_text', 'do_shortcode', 11);
